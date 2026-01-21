@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Climate Insights Dashboard</title>
+
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- Plotly.js CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+</head>
+
+<body>
+  <header class="header">
+    <div class="title">Climate Insights (2000–2022)</div>
+    <div class="subtitle">Interactive dashboard: trends, comparisons, relationships</div>
+  </header>
+
+  <section class="controls">
+    <label>
+      Metric
+      <select id="metricSelect">
+        <option value="temperature">Temperature (°C)</option>
+        <option value="co2">CO2 Emissions (ppm)</option>
+        <option value="sea_level">Sea Level Rise (mm)</option>
+        <option value="precipitation">Precipitation (mm)</option>
+        <option value="humidity">Humidity (%)</option>
+        <option value="wind_speed">Wind Speed (km/h)</option>
+      </select>
+    </label>
+    <label>
+    Year
+    <input type="range" id="yearSlider" min="2000" max="2022"step="1"/>
+    <span id="yearLabel"></span>
+</label>
+
+</section>
+
+  <main class="grid">
+    <div class="card">
+      <div class="card-title">Trend over time</div>
+      <div id="trendChart" class="chart"></div>
+    </div>
+
+    <!-- We will add 3 more cards here in later steps -->
+    <div class="card">
+      <div class="card-title">Continents overview</div>
+      <div id="mapChart" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Temporal pattern by continent</div>
+      <div id="heatmapChart" class="chart"></div>
+    </div>
+
+  <div class="card">
+    <div class="card-title">Top countries by change</div>
+    <div id="rankingChart" class="chart"></div>
+  </div>
+</main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
