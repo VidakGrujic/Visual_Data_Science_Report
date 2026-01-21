@@ -16,6 +16,8 @@ const SAFE_COLORS = [
   "#E69F00"  // golden yellow (instead of gray)
 ];
 
+
+
 const CONTINENT_COLORS = {
   "Africa": SAFE_COLORS[0],      // darker blue
   "Europe": SAFE_COLORS[1],      // rose/pink
