@@ -237,7 +237,7 @@ function plotRanking() {
       },
       hovertemplate:
         "<b>%{y}</b><br>" +
-        `${metricLabel} change since ${BASELINE_YEAR}: %{x:.3f}` +
+        `${metricLabel}: %{x:.3f}` +
         "<extra></extra>"
     }],
     {
@@ -246,7 +246,7 @@ function plotRanking() {
       plot_bgcolor: "#ffffff",
       font: { color: "#1a1a1a" },
       xaxis: {
-        title: `${metricLabel} change since ${BASELINE_YEAR}`,
+        title: `${metricLabel}`,
         gridcolor: "rgba(0,0,0,0.08)"
       }
     },
