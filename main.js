@@ -10,6 +10,8 @@ const HIGHLIGHT_COLOR = "#332288 "; // vivid red for selection
 // -----------------------------
 
 
+
+
 const SAFE_COLORS = [
   "#009E73", // darker blue
   "#000000", // rose/pink (instead of orange)
