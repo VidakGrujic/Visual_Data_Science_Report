@@ -2,27 +2,27 @@
 // Data source
 // -----------------------------
 const DATA_URL = "../data/climate_data.json";
-const HIGHLIGHT_COLOR = "#F58518"; // orange for selection
+const HIGHLIGHT_COLOR = "#F58518 "; // vivid red for selection
 
 // -----------------------------
-// Color palette (≤ 6, high contrast)
+// Color palette (colorblind-safe, darker/richer colors)
 // -----------------------------
 const SAFE_COLORS = [
-  "#4C78A8", // blue
-  "#72B7B2", // teal (instead of green)
-  "#B279A2", // purple
-  "#9D755D", // brown
-  "#F2CF5B", // yellow-ish (still visible)
-  "#7F7F7F"  // gray
+  "#005A8C", // darker blue
+  "#CC79A7", // rose/pink (instead of orange)
+  "#007F5F", // darker teal
+  "#9B4F96", // darker purple
+  "#8B6914", // darker tan/brown
+  "#E69F00"  // golden yellow (instead of gray)
 ];
 
 const CONTINENT_COLORS = {
-  "Africa": SAFE_COLORS[0],
-  "Europe": SAFE_COLORS[1],
-  "Asia": SAFE_COLORS[2],
-  "North America": SAFE_COLORS[3],
-  "South America": SAFE_COLORS[4],
-  "Oceania": SAFE_COLORS[5]
+  "Africa": SAFE_COLORS[0],      // darker blue
+  "Europe": SAFE_COLORS[1],      // rose/pink
+  "Asia": SAFE_COLORS[2],        // darker teal
+  "North America": SAFE_COLORS[3], // darker purple
+  "South America": SAFE_COLORS[4], // darker tan
+  "Oceania": SAFE_COLORS[5]      // golden yellow
 };
 
 // -----------------------------
@@ -129,10 +129,10 @@ function plotTrend() {
       x: rows.map(r => r.year),
       y: rows.map(r => r.value),
       line: {
-      width: isSelected ? 4 : 2,
-      color: c === state.selectedContinent
-      ? "#F58518"
-      : CONTINENT_COLORS[c]
+        width: isSelected ? 4 : 2,
+        color: c === state.selectedContinent
+          ? HIGHLIGHT_COLOR
+          : CONTINENT_COLORS[c]
       },
       opacity: isSelected ? 1 : 0.25,
       hovertemplate:
@@ -142,40 +142,38 @@ function plotTrend() {
   });
 
   Plotly.newPlot(
-  "trendChart",
-  traces,
-  {
-    margin: { l: 52, r: 18, t: 10, b: 42 },
-    paper_bgcolor: "rgba(0,0,0,0)",
-    plot_bgcolor: "rgba(0,0,0,0)",
-    font: { color: "#e9eefb" },
-    xaxis: {
-      title: "Year",
-      gridcolor: "rgba(255,255,255,0.10)"
+    "trendChart",
+    traces,
+    {
+      margin: { l: 52, r: 18, t: 10, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      font: { color: "#1a1a1a" },
+      xaxis: {
+        title: "Year",
+        gridcolor: "rgba(0,0,0,0.08)"
+      },
+      yaxis: {
+        title: metricLabel,
+        gridcolor: "rgba(0,0,0,0.08)"
+      },
+      legend: {
+        orientation: "h",
+        y: -0.25
+      }
     },
-    yaxis: {
-      title: metricLabel,
-      gridcolor: "rgba(255,255,255,0.10)"
-    },
-    legend: {
-      orientation: "h",
-      y: -0.25
-    }
-  },
-  { responsive: true, displaylogo: false }
-).then(gd => {
-  gd.on("plotly_click", evt => {
-    const clicked = evt.points[0].data.name;
-
-    state.selectedContinent =
-      state.selectedContinent === clicked ? null : clicked;
-
-    plotTrend();
-    plotRanking();
-    plotHeatmap();
-    plotMap();
+    { responsive: true, displaylogo: false }
+  ).then(gd => {
+    gd.on("plotly_click", evt => {
+      const clicked = evt.points[0].data.name;
+      state.selectedContinent =
+        state.selectedContinent === clicked ? null : clicked;
+      plotTrend();
+      plotRanking();
+      plotHeatmap();
+      plotMap();
+    });
   });
-});
 }
 
 // -----------------------------
@@ -187,7 +185,6 @@ function plotRanking() {
   const year = state.year;
   const BASELINE_YEAR = 2000;
 
-  // --- baseline (year 2000) ---
   const baseline = raw
     .filter(d =>
       d.year === BASELINE_YEAR &&
@@ -204,7 +201,6 @@ function plotRanking() {
     baselineMean[c] = mean(baseline[c]);
   }
 
-  // --- selected year ---
   const current = raw
     .filter(d =>
       d.year === year &&
@@ -216,7 +212,6 @@ function plotRanking() {
       return acc;
     }, {});
 
-  // --- compute change ---
   const rows = Object.keys(current).map(cont => ({
     label: cont,
     value: mean(current[cont]) - (baselineMean[cont] ?? 0)
@@ -235,7 +230,7 @@ function plotRanking() {
         color: ordered.map(d =>
           d.label === state.selectedContinent
             ? HIGHLIGHT_COLOR
-            : "#9CA3AF"   // neutral gray
+            : "#8e9aaf"   // soft blue-gray for neutral bars
         )
       },
       hovertemplate:
@@ -245,12 +240,12 @@ function plotRanking() {
     }],
     {
       margin: { l: 120, r: 20, t: 10, b: 40 },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(0,0,0,0)",
-      font: { color: "#e9eefb" },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      font: { color: "#1a1a1a" },
       xaxis: {
         title: `${metricLabel} change since ${BASELINE_YEAR}`,
-        gridcolor: "rgba(255,255,255,0.10)"
+        gridcolor: "rgba(0,0,0,0.08)"
       }
     },
     { responsive: true, displaylogo: false }
@@ -259,7 +254,6 @@ function plotRanking() {
       const clicked = evt.points[0].y;
       state.selectedContinent =
         state.selectedContinent === clicked ? null : clicked;
-
       plotTrend();
       plotRanking();
       plotHeatmap();
@@ -268,8 +262,9 @@ function plotRanking() {
   });
 }
 
-
-
+// -----------------------------
+// Plot 3: Heatmap
+// -----------------------------
 function plotHeatmap() {
   const metric = state.metric;
   const metricLabel = metricToLabel(metric);
@@ -284,14 +279,12 @@ function plotHeatmap() {
     new Set(agg.map(d => d.year))
   ).sort((a, b) => a - b);
 
-  // build z-matrix with masking for brushing & linking
   const z = continents.map(cont =>
     years.map(year => {
       const cell = agg.find(
         d => d.continent === cont && d.year === year
       );
 
-      // if a continent is selected, hide others
       if (
         state.selectedContinent !== null &&
         cont !== state.selectedContinent
@@ -321,9 +314,9 @@ function plotHeatmap() {
     }],
     {
       margin: { l: 110, r: 20, t: 10, b: 40 },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(0,0,0,0)",
-      font: { color: "#e9eefb" },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      font: { color: "#1a1a1a" },
       xaxis: {
         title: "Year"
       }
@@ -342,7 +335,6 @@ function plotMap() {
 
   const VALID_CONTINENTS = Object.keys(CONTINENT_COLORS);
 
-  // filter data for selected year
   const dataYear = raw.filter(d =>
     d.year === year &&
     VALID_CONTINENTS.includes(d.continent) &&
@@ -372,29 +364,29 @@ function plotMap() {
       name: cont,
       marker: {
         line: {
-          color: "rgba(255,255,255,0.4)",
+          color: "rgba(0,0,0,0.2)",
           width: 0.5
         }
       },
-      opacity:
-        state.selectedContinent === null || isSelected ? 1 : 0.25,
+      opacity: isSelected ? 1 : 0.25,
       hovertemplate:
         `<b>${cont}</b><br>` +
         `Year: ${year}<extra></extra>`
     };
-  }).filter(Boolean); // remove null traces
+  }).filter(Boolean);
 
   Plotly.newPlot(
     "mapChart",
     traces,
     {
       margin: { l: 0, r: 0, t: 0, b: 0 },
-      paper_bgcolor: "rgba(0,0,0,0)",
+      paper_bgcolor: "#ffffff",
       geo: {
         projection: { type: "natural earth" },
-        bgcolor: "rgba(0,0,0,0)",
+        bgcolor: "#f0f0f0",
         showframe: false,
-        showcoastlines: false
+        showcoastlines: true,
+        coastlinecolor: "#cccccc"
       },
       legend: {
         orientation: "h",
@@ -403,23 +395,17 @@ function plotMap() {
     },
     { responsive: true, displaylogo: false }
   ).then(gd => {
-  gd.on("plotly_click", evt => {
-    const clicked = evt.points[0].data.name;
-
-    state.selectedContinent =
-      state.selectedContinent === clicked ? null : clicked;
-
-    plotTrend();
-    plotRanking();
-    plotHeatmap();
-    plotMap();
+    gd.on("plotly_click", evt => {
+      const clicked = evt.points[0].data.name;
+      state.selectedContinent =
+        state.selectedContinent === clicked ? null : clicked;
+      plotTrend();
+      plotRanking();
+      plotHeatmap();
+      plotMap();
+    });
   });
-});
 }
-
-
-
-
 
 // -----------------------------
 // Init
@@ -470,12 +456,10 @@ async function init() {
     plotMap();
   });
 
-  // NOW render
   plotTrend();
   plotRanking();
   plotHeatmap();
   plotMap();
 }
-
 
 init();

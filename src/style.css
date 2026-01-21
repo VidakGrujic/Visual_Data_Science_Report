@@ -1,9 +1,9 @@
 :root {
-  --bg: #0b0f19;
-  --panel: #121a2a;
-  --text: #e9eefb;
-  --muted: #a9b4d0;
-  --border: rgba(255,255,255,0.10);
+  --bg: #ffffff;
+  --panel: #f8f9fa;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: rgba(0,0,0,0.10);
 }
 
 * { box-sizing: border-box; }
@@ -91,7 +91,6 @@ select {
   .card { min-height: 340px; }
 }
 
-
 input[type="range"] {
   -webkit-appearance: none;
   width: 160px;
@@ -107,7 +106,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #4C78A8;
+  background: #005A8C;
   cursor: pointer;
   border: 2px solid #ffffff;
 }
@@ -116,7 +115,7 @@ input[type="range"]::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #4C78A8;
+  background: #005A8C;
   cursor: pointer;
   border: 2px solid #ffffff;
 }
