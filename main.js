@@ -2,17 +2,20 @@
 // Data source
 // -----------------------------
 const DATA_URL = "climate_data.json";
-const HIGHLIGHT_COLOR = "#F58518 "; // vivid red for selection
+const HIGHLIGHT_COLOR = "#332288 "; // vivid red for selection
 
 // -----------------------------
 // Color palette (colorblind-safe, darker/richer colors)
+// Used Wong coloring
 // -----------------------------
+
+
 const SAFE_COLORS = [
-  "#005A8C", // darker blue
-  "#CC79A7", // rose/pink (instead of orange)
-  "#007F5F", // darker teal
-  "#9B4F96", // darker purple
-  "#8B6914", // darker tan/brown
+  "#009E73", // darker blue
+  "#000000", // rose/pink (instead of orange)
+  "#0072B2", // darker teal
+  "#D55E00", // darker purple
+  "#CC79A7", // darker tan/brown
   "#E69F00"  // golden yellow (instead of gray)
 ];
 
@@ -134,7 +137,11 @@ function plotTrend() {
         width: isSelected ? 4 : 2,
         color: c === state.selectedContinent
           ? HIGHLIGHT_COLOR
-          : CONTINENT_COLORS[c]
+          : CONTINENT_COLORS[c], 
+        dash:
+          c === state.selectedContinent
+            ? "solid"
+            : "dot"
       },
       opacity: isSelected ? 1 : 0.25,
       hovertemplate:
@@ -163,6 +170,7 @@ function plotTrend() {
         orientation: "h",
         y: -0.25
       }
+    
     },
     { responsive: true, displaylogo: false }
   ).then(gd => {
@@ -330,13 +338,16 @@ function plotHeatmap() {
 // -----------------------------
 // Plot 4: World map (continents)
 // -----------------------------
+// -----------------------------
+// Plot 4: World map (continents)
+// -----------------------------
 function plotMap() {
   const metric = state.metric;
-  const metricLabel = metricToLabel(metric);
   const year = state.year;
 
   const VALID_CONTINENTS = Object.keys(CONTINENT_COLORS);
 
+  // filter data for selected year
   const dataYear = raw.filter(d =>
     d.year === year &&
     VALID_CONTINENTS.includes(d.continent) &&
@@ -349,12 +360,15 @@ function plotMap() {
 
     if (!countries.length) return null;
 
-    const isSelected =
-      state.selectedContinent !== null && cont === state.selectedContinent;
+    const isSelected = cont === state.selectedContinent;
 
-    const color = isSelected
-      ? HIGHLIGHT_COLOR
-      : CONTINENT_COLORS[cont];
+    // color logic: gray out others when a selection exists
+    let color;
+    if (state.selectedContinent === null) {
+      color = CONTINENT_COLORS[cont];
+    } else {
+      color = isSelected ? HIGHLIGHT_COLOR : "#D1D5DB";
+    }
 
     return {
       type: "choropleth",
@@ -366,11 +380,12 @@ function plotMap() {
       name: cont,
       marker: {
         line: {
-          color: "rgba(0,0,0,0.2)",
-          width: 0.5
+          color: "rgba(0,0,0,0.25)",
+          width: 0.6
         }
       },
-      opacity: isSelected ? 1 : 0.25,
+      opacity:
+        state.selectedContinent === null || isSelected ? 1 : 0.35,
       hovertemplate:
         `<b>${cont}</b><br>` +
         `Year: ${year}<extra></extra>`
@@ -385,10 +400,10 @@ function plotMap() {
       paper_bgcolor: "#ffffff",
       geo: {
         projection: { type: "natural earth" },
-        bgcolor: "#f0f0f0",
+        bgcolor: "#f3f4f6",
         showframe: false,
         showcoastlines: true,
-        coastlinecolor: "#cccccc"
+        coastlinecolor: "#c7c7c7"
       },
       legend: {
         orientation: "h",
@@ -399,8 +414,10 @@ function plotMap() {
   ).then(gd => {
     gd.on("plotly_click", evt => {
       const clicked = evt.points[0].data.name;
+
       state.selectedContinent =
         state.selectedContinent === clicked ? null : clicked;
+
       plotTrend();
       plotRanking();
       plotHeatmap();
