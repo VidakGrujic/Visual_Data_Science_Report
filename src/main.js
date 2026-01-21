@@ -1,7 +1,7 @@
 // -----------------------------
 // Data source
 // -----------------------------
-const DATA_URL = "../data/climate_data.json";
+const DATA_URL = "./data/climate_data.json";
 const HIGHLIGHT_COLOR = "#F58518 "; // vivid red for selection
 
 // -----------------------------
